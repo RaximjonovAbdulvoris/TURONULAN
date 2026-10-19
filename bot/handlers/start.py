@@ -1,3 +1,4 @@
+import logging
 from pathlib import Path
 from uuid import uuid4
 
@@ -5,6 +6,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMa
 from telegram.ext import CallbackQueryHandler, ContextTypes, ConversationHandler, MessageHandler, filters
 
 from bot.regions import NAMANGAN, TASHKENT, REGION_NAMES, clear_application, get_region, region_name
+
+logger = logging.getLogger(__name__)
 
 MENU_DRIVER = "📝 Haydovchi arizasi"
 MENU_BRAND = "🎨 Brend arizasi"
@@ -171,13 +174,22 @@ async def show_contact(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         return ConversationHandler.END
     clear_application(context)
     region = get_region(context)
-    image_path = OFFICE_IMAGES / f"office_{region}.png"
-    with image_path.open("rb") as photo:
-        await update.effective_message.reply_photo(
-            photo=photo,
-            caption=CONTACT_POSTS[region],
+    image_path = OFFICE_IMAGES / f"office_{region}.jpg"
+    try:
+        with image_path.open("rb") as photo:
+            await update.effective_message.reply_photo(
+                photo=photo,
+                caption=CONTACT_POSTS[region],
+                parse_mode="HTML",
+                reply_markup=CONTACT_MAPS[region],
+            )
+    except Exception as error:
+        logger.warning("Contact photo failed: region=%s error=%s", region, type(error).__name__)
+        await update.effective_message.reply_text(
+            CONTACT_POSTS[region],
             parse_mode="HTML",
             reply_markup=CONTACT_MAPS[region],
+            disable_web_page_preview=True,
         )
     return ConversationHandler.END
 

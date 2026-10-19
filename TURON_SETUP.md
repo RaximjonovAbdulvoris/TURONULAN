@@ -16,7 +16,7 @@ fayliga nusxalab, yangi tokenni kiriting:
 
 Aloqa bo‘limida har bir hududning ofis rasmi, manzili, telefonlari va xarita
 tugmalari ko‘rsatiladi. Ularni yangilash uchun `bot/handlers/start.py` va
-`bot/templates/office_<hudud>.png` fayllarini tahrirlang.
+`bot/templates/office_<hudud>.jpg` fayllarini tahrirlang.
 
 `python -m bot.configure check --scope all` bilan Toshkent guruhlari va bot
 huquqlarini tekshiring. Namangan guruhlari uchun ham botning administrator va

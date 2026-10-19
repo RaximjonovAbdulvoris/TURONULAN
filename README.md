@@ -9,7 +9,7 @@ Namangan va Toshkent uchun alohida Telegram guruhlari bilan ishlaydigan sodda ar
 
 ## Ishga tushirish
 
-Python 3.12 bilan `pip install -r requirements.txt` qiling. `.env.example` faylidan `.env` nusxa oling va yangi bot tokenini hamda hududlar uchun aloqa matnlarini faqat serverda kiriting. `.env` GitHubga yuborilmaydi.
+Python 3.12 bilan `pip install -r requirements.txt` qiling. `.env.example` faylidan `.env` nusxa oling va yangi bot tokenini faqat serverda kiriting. Aloqa bo‘limi uchun hududga mos ofis rasmi, telefonlar va xarita tugmalari kodda tayyor. `.env` GitHubga yuborilmaydi.
 
 ```bash
 mkdir -p runtime

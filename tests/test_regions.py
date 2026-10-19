@@ -13,7 +13,7 @@ from bot.main import build_application_conversation
 
 
 def update():
-    msg = N(reply_text=AsyncMock(), text='', contact=None)
+    msg = N(reply_text=AsyncMock(), reply_photo=AsyncMock(), text='', contact=None)
     return N(message=msg, effective_message=msg, callback_query=None,
              effective_chat=N(type='private'),
              effective_user=N(id=123, full_name='Test Person', username='example'))
@@ -52,16 +52,15 @@ class TuronRegions(unittest.IsolatedAsyncioTestCase):
                     self.assertEqual(await brand.start_brand(b, c), brand.BRAND_WARN)
                     c.bot.get_chat_member.assert_not_awaited()
 
-    async def test_contact_uses_only_region_specific_new_setting(self):
-        with patch.dict(os.environ, {'TURON_CONTACT_NAMANGAN': '+998 90 000 00 00'}, clear=False):
-            c = context('namangan')
+    async def test_contact_uses_only_region_specific_post(self):
+        for region, username in [('namangan', '@WBTURONNAMANGAN'),
+                                 ('tashkent', '@WBTURONSUPPORT')]:
+            c = context(region)
             u = update()
             await start.show_contact(u, c)
-            self.assertIn('+998 90 000 00 00', u.message.reply_text.await_args.args[0])
-        c = context('tashkent')
-        u = update()
-        await start.show_contact(u, c)
-        self.assertNotIn('+998 90 000 00 00', u.message.reply_text.await_args.args[0])
+            kwargs = u.message.reply_photo.await_args.kwargs
+            self.assertIn(username, kwargs['caption'])
+            self.assertEqual(kwargs['reply_markup'], start.CONTACT_MAPS[region])
 
     def test_routes_and_three_operator_actions(self):
         with patch.dict(os.environ, {'TASHKENT_DRIVER_GROUP_1': '-2001',

@@ -1,16 +1,50 @@
-import os
-from html import escape as html_escape
+from pathlib import Path
 from uuid import uuid4
 
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackQueryHandler, ContextTypes, ConversationHandler, MessageHandler, filters
 
-from bot.regions import NAMANGAN, REGION_NAMES, clear_application, get_region, region_name
+from bot.regions import NAMANGAN, TASHKENT, REGION_NAMES, clear_application, get_region, region_name
 
 MENU_DRIVER = "📝 Haydovchi arizasi"
 MENU_BRAND = "🎨 Brend arizasi"
 MENU_CONTACT = "📞 Aloqa uchun"
 MENU_REGION = "🔄 Hududni almashtirish"
+OFFICE_IMAGES = Path(__file__).resolve().parent.parent / "templates"
+
+CONTACT_POSTS = {
+    TASHKENT: (
+        "📍 <b>TURON TAXI · TOSHKENT</b>\n\n"
+        "📞 <b>Bog‘lanish:</b>\n"
+        "+998 95 078 97 99\n+"
+        "+998 95 059 97 99\n\n"
+        "💬 <b>Telegram:</b> @WBTURONSUPPORT\n"
+        "💳 <b>Pul yechish boti:</b> @didox_s_wb_bot\n\n"
+        "🗺 <b>Ofis manzili:</b> Yashnobod tumani, Qorasuv ko‘chasi, "
+        "Dodo Pizza qarshisida."
+    ),
+    NAMANGAN: (
+        "📍 <b>TURON TAXI · NAMANGAN</b>\n\n"
+        "📞 <b>Bog‘lanish:</b>\n"
+        "+998 95 078 97 99\n"
+        "+998 95 059 97 99\n\n"
+        "💬 <b>Telegram:</b> @WBTURONNAMANGAN\n"
+        "💳 <b>Pul yechish boti:</b> @didox_s_wb_bot\n\n"
+        "📍 <b>Bosh ofis:</b> 6-mikrorayon, IIB ro‘parasida.\n"
+        "📍 <b>2-ofis:</b> Lola ko‘chasi, Boburshoh ko‘chasi, "
+        "11-maktab ro‘parasida."
+    ),
+}
+
+CONTACT_MAPS = {
+    TASHKENT: InlineKeyboardMarkup([[
+        InlineKeyboardButton("🗺 Xaritada ochish", url="https://yandex.uz/maps/-/CXF9VLP6"),
+    ]]),
+    NAMANGAN: InlineKeyboardMarkup([[
+        InlineKeyboardButton("📍 Bosh ofis", url="https://yandex.uz/maps/-/CXF9bYPx"),
+        InlineKeyboardButton("📍 2-ofis", url="https://yandex.uz/maps/-/CXF9fQ0S"),
+    ]]),
+}
 
 
 def main_keyboard(region: str) -> ReplyKeyboardMarkup:
@@ -137,18 +171,19 @@ async def show_contact(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         return ConversationHandler.END
     clear_application(context)
     region = get_region(context)
-    contact = os.environ.get(f"TURON_CONTACT_{region.upper()}", "").strip()
-    await update.effective_message.reply_text(
-        f"📞 <b>{region_name(region)} — TURON TAXI aloqa</b>\n\n"
-        + (html_escape(contact) if contact else "Bog‘lanish ma’lumotlari tez orada qo‘shiladi."),
-        parse_mode="HTML", reply_markup=main_keyboard(region),
-        disable_web_page_preview=True,
-    )
+    image_path = OFFICE_IMAGES / f"office_{region}.png"
+    with image_path.open("rb") as photo:
+        await update.effective_message.reply_photo(
+            photo=photo,
+            caption=CONTACT_POSTS[region],
+            parse_mode="HTML",
+            reply_markup=CONTACT_MAPS[region],
+        )
     return ConversationHandler.END
 
 
 def build_contact_handler() -> MessageHandler:
-    return MessageHandler(filters.ChatType.PRIVATE & filters.Regex(r"^(?:📞 )?Bog'lanish uchun$"), show_contact)
+    return MessageHandler(filters.ChatType.PRIVATE & filters.Regex(r"^(?:📞 Aloqa uchun|Bog['‘]lanish uchun)$"), show_contact)
 
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:

@@ -8,15 +8,15 @@ guruhga oddiy matn sifatida yuboriladi.
 Yangi token va alohida doimiy `PERSIST_DIR` ishlating. Eski HUMO botining
 `.env`, `bot_routes.json` yoki `bot_persistence.pkl` fayllarini ko'chirmang.
 Telegram guruh IDlari `.env.example` ichida tayyor. Uni serverda `.env`
-fayliga nusxalab, yangi token va aloqa ma'lumotlarini kiriting:
+fayliga nusxalab, yangi tokenni kiriting:
 
 - Namangan: `DRIVER_GROUP_1`, `DRIVER_GROUP_2`, `BRAND_GROUP`, `ARCHIVE_GROUP`.
 - Toshkent: `TASHKENT_DRIVER_GROUP_1`, `TASHKENT_DRIVER_GROUP_2`,
   `TASHKENT_BRAND_GROUP`, `TASHKENT_ARCHIVE_GROUP`.
 
-Aloqa matni tayyor bo'lganda `TURON_CONTACT_TASHKENT` va
-`TURON_CONTACT_NAMANGAN` ga hududga mos matn kiriting. Hozir ular bo'sh
-bo'lsa, bot eski parkning aloqa ma'lumotini ko'rsatmaydi.
+Aloqa bo‘limida har bir hududning ofis rasmi, manzili, telefonlari va xarita
+tugmalari ko‘rsatiladi. Ularni yangilash uchun `bot/handlers/start.py` va
+`bot/templates/office_<hudud>.png` fayllarini tahrirlang.
 
 `python -m bot.configure check --scope all` bilan Toshkent guruhlari va bot
 huquqlarini tekshiring. Namangan guruhlari uchun ham botning administrator va

@@ -20,6 +20,6 @@ python -m bot.configure check --scope all
 python -m bot.main
 ```
 
-Toshkent va Namangan IDlari `.env.example` ichida kiritilgan. Farg‘ona uchun haydovchi 01/02, brend va arxiv guruhlarini `python -m bot.configure fargona` orqali sozlang, botni guruhlarga administrator qiling va `python -m bot.configure check --scope fargona` bilan tekshiring. Farg‘ona IDlari sozlanmaguncha arizalar boshqa hududga yuborilmaydi. `--scope all` tekshiruvi Farg‘ona sozlangandan keyin muvaffaqiyatli o‘tadi. Har bir hududdan alohida test arizasi yuboring. Farg‘ona aloqa ma’lumotlari va ofis rasmi berilmaguncha aloqa bo‘limida faqat tasdiqlangan pul yechish boti ko‘rsatiladi. Ishlab turgan boshqa botning tokeni yoki arizalar bazasini bu loyihaga ko‘chirmang.
+Uchala hududning IDlari `.env.example` ichida kiritilgan. Ishlab turgan serverda `.env` fayli saqlanadi: Farg‘ona haydovchi 01/02, brend va arxiv guruhlarini `python -m bot.configure fargona` orqali sozlang, botni guruhlarga administrator qiling va `python -m bot.configure check --scope fargona` bilan tekshiring. Farg‘ona IDlari sozlanmaguncha arizalar boshqa hududga yuborilmaydi. Har bir hududdan alohida test arizasi yuboring. Farg‘ona aloqa ma’lumotlari va ofis rasmi berilmaguncha aloqa bo‘limida faqat tasdiqlangan pul yechish boti ko‘rsatiladi. Ishlab turgan boshqa botning tokeni yoki arizalar bazasini bu loyihaga ko‘chirmang.
 
 Batafsil: [TURON_SETUP.md](TURON_SETUP.md).

@@ -4,7 +4,12 @@ from bot.route_settings import destination
 
 NAMANGAN = "namangan"
 TASHKENT = "tashkent"
-REGION_NAMES = {TASHKENT: "Toshkent shahri", NAMANGAN: "Namangan shahri"}
+FARGONA = "fargona"
+REGION_NAMES = {
+    TASHKENT: "Toshkent shahri",
+    FARGONA: "Farg‘ona shahri",
+    NAMANGAN: "Namangan shahri",
+}
 
 
 def get_region(context) -> str | None:
@@ -29,6 +34,9 @@ def driver_groups(region: str) -> list[str]:
     if region == TASHKENT:
         return [value for i in (1, 2)
                 if (value := destination(f"TASHKENT_DRIVER_GROUP_{i}"))]
+    if region == FARGONA:
+        return [value for i in (1, 2)
+                if (value := destination(f"FARGONA_DRIVER_GROUP_{i}"))]
     return []
 
 
@@ -37,6 +45,8 @@ def application_group(region: str, kind: str) -> str:
         return BRAND_GROUP
     if region == TASHKENT and kind == "brand":
         return destination("TASHKENT_BRAND_GROUP")
+    if region == FARGONA and kind == "brand":
+        return destination("FARGONA_BRAND_GROUP")
     return ""
 
 
@@ -45,4 +55,6 @@ def archive_group(region: str) -> str:
         return ARCHIVE_GROUP
     if region == TASHKENT:
         return destination("TASHKENT_ARCHIVE_GROUP")
+    if region == FARGONA:
+        return destination("FARGONA_ARCHIVE_GROUP")
     return ""

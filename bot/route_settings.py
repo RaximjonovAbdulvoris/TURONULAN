@@ -11,8 +11,14 @@ TASHKENT_KEYS = {
     "brand": "TASHKENT_BRAND_GROUP",
     "archive": "TASHKENT_ARCHIVE_GROUP",
 }
+FARGONA_KEYS = {
+    "driver1": "FARGONA_DRIVER_GROUP_1",
+    "driver2": "FARGONA_DRIVER_GROUP_2",
+    "brand": "FARGONA_BRAND_GROUP",
+    "archive": "FARGONA_ARCHIVE_GROUP",
+}
 
-ROUTE_KEYS = set(TASHKENT_KEYS.values())
+ROUTE_KEYS = set(TASHKENT_KEYS.values()) | set(FARGONA_KEYS.values())
 
 
 def settings_path() -> Path:
@@ -26,7 +32,7 @@ def validate(key: str, value: str) -> str:
     if not isinstance(value, str):
         raise ValueError(f"{key}: ID matn ko'rinishida bo'lishi kerak.")
     value = value.strip()
-    if value == "" and key == TASHKENT_KEYS["driver2"]:
+    if value == "" and key in (TASHKENT_KEYS["driver2"], FARGONA_KEYS["driver2"]):
         return value
     if not re.fullmatch(r"-[1-9][0-9]*", value):
         raise ValueError(f"{key}: manfiy raqamli guruh ID kiriting, masalan -1001234567890.")

@@ -6,7 +6,7 @@ import os
 import re
 
 from bot.route_settings import (
-    TASHKENT_KEYS, destination, read_settings, save_settings,
+    TASHKENT_KEYS, FARGONA_KEYS, destination, read_settings, save_settings,
     settings_path, validate,
 )
 
@@ -32,9 +32,11 @@ async def check_routes(scope: str = "tashkent") -> int:
     logging.getLogger("httpx").setLevel(logging.WARNING)
     scoped_keys = {
         "tashkent": TASHKENT_KEYS,
+        "fargona": FARGONA_KEYS,
         "namangan": NAMANGAN_ENV_KEYS,
         "all": {
             **{f"tashkent_{name}": key for name, key in TASHKENT_KEYS.items()},
+            **{f"fargona_{name}": key for name, key in FARGONA_KEYS.items()},
             **{f"namangan_{name}": key for name, key in NAMANGAN_ENV_KEYS.items()},
         },
     }[scope]
@@ -44,7 +46,7 @@ async def check_routes(scope: str = "tashkent") -> int:
         if not value and name.endswith("driver2"):
             continue
         try:
-            if scoped_keys[name] in TASHKENT_KEYS.values():
+            if scoped_keys[name] in (*TASHKENT_KEYS.values(), *FARGONA_KEYS.values()):
                 validate(scoped_keys[name], value)
             elif not re.fullmatch(r"-[1-9][0-9]*", value):
                 raise ValueError(f"{scoped_keys[name]}: manfiy raqamli guruh ID kiriting.")
@@ -92,13 +94,14 @@ async def check_routes(scope: str = "tashkent") -> int:
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser(description="Guruhlarni terminaldan sozlash.")
     commands = parser.add_subparsers(dest="command", required=True)
-    setup = commands.add_parser("tashkent", help="IDlarni kiritish yoki o'zgartirish")
-    for name in TASHKENT_KEYS:
-        setup.add_argument(f"--{name}", help=LABELS[name])
+    for city in ("tashkent", "fargona"):
+        setup = commands.add_parser(city, help="IDlarni kiritish yoki o'zgartirish")
+        for name in TASHKENT_KEYS:
+            setup.add_argument(f"--{name}", help=LABELS[name])
     commands.add_parser("show", help="Amaldagi IDlar va ularning manbasini ko'rish")
     check = commands.add_parser("check", help="Token, guruhlar va bot ruxsatlarini tekshirish")
     check.add_argument(
-        "--scope", choices=("tashkent", "namangan", "all"), default="tashkent",
+        "--scope", choices=("tashkent", "fargona", "namangan", "all"), default="tashkent",
         help="Tekshiriladigan shahar (standart: tashkent)",
     )
     args = parser.parse_args(argv)
@@ -108,11 +111,11 @@ def main(argv=None) -> int:
         if args.command == "show":
             local = read_settings()
             print(f"Sozlama fayli: {settings_path()}")
-            for key in (*NAMANGAN_ENV_KEYS.values(), *TASHKENT_KEYS.values()):
+            for key in (*NAMANGAN_ENV_KEYS.values(), *TASHKENT_KEYS.values(), *FARGONA_KEYS.values()):
                 source = "CMD/fayl" if key in local else "muhit"
                 print(f"{key}: {destination(key) or 'sozlanmagan'} ({source})")
             return 0
-        keys = TASHKENT_KEYS
+        keys = TASHKENT_KEYS if args.command == "tashkent" else FARGONA_KEYS
         changes = {
             key: getattr(args, name) for name, key in keys.items()
             if getattr(args, name) is not None
@@ -124,7 +127,7 @@ def main(argv=None) -> int:
                 answer = input(f"{LABELS[name]} [{current or 'sozlanmagan'}]: ").strip()
                 changes[key] = answer or current
         for key, value in changes.items():
-            if key == TASHKENT_KEYS["driver2"] and value.lower() == "none":
+            if key == keys["driver2"] and value.lower() == "none":
                 changes[key] = ""
         # Validate the complete effective setup before saving any change.
         for name, key in keys.items():

@@ -1,6 +1,6 @@
 # TURON TAXI bot
 
-Namangan va Toshkent uchun alohida Telegram guruhlari bilan ishlaydigan sodda ariza boti.
+Toshkent, Farg‘ona va Namangan uchun alohida Telegram guruhlari bilan ishlaydigan sodda ariza boti.
 
 - Haydovchi arizasi: hujjat rasmlari va operatorga xabar.
 - Brend arizasi: oddiy matn, avtomatik Google Sheets yozuvi yo‘q.
@@ -20,6 +20,6 @@ python -m bot.configure check --scope all
 python -m bot.main
 ```
 
-Guruh IDlari `.env.example` ichida kiritilgan. Botni sakkizala guruhga qo‘shib, arxiv guruhlarida o‘chirish huquqini bering. Namangan va Toshkentdan bir martadan test arizasi yuborib oqimni tekshiring. Ishlab turgan boshqa botning tokeni yoki arizalar bazasini bu loyihaga ko‘chirmang.
+Toshkent va Namangan IDlari `.env.example` ichida kiritilgan. Farg‘ona uchun haydovchi 01/02, brend va arxiv guruhlarini `python -m bot.configure fargona` orqali sozlang, botni guruhlarga administrator qiling va `python -m bot.configure check --scope fargona` bilan tekshiring. Farg‘ona IDlari sozlanmaguncha arizalar boshqa hududga yuborilmaydi. `--scope all` tekshiruvi Farg‘ona sozlangandan keyin muvaffaqiyatli o‘tadi. Har bir hududdan alohida test arizasi yuboring. Farg‘ona aloqa ma’lumotlari va ofis rasmi berilmaguncha aloqa bo‘limida faqat tasdiqlangan pul yechish boti ko‘rsatiladi. Ishlab turgan boshqa botning tokeni yoki arizalar bazasini bu loyihaga ko‘chirmang.
 
 Batafsil: [TURON_SETUP.md](TURON_SETUP.md).

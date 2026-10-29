@@ -5,7 +5,7 @@ from uuid import uuid4
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup, ReplyKeyboardRemove, Update
 from telegram.ext import CallbackQueryHandler, ContextTypes, ConversationHandler, MessageHandler, filters
 
-from bot.regions import NAMANGAN, TASHKENT, REGION_NAMES, clear_application, get_region, region_name
+from bot.regions import NAMANGAN, TASHKENT, FARGONA, REGION_NAMES, clear_application, get_region, region_name
 
 logger = logging.getLogger(__name__)
 
@@ -16,6 +16,11 @@ MENU_REGION = "🔄 Hududni almashtirish"
 OFFICE_IMAGES = Path(__file__).resolve().parent.parent / "templates"
 
 CONTACT_POSTS = {
+    FARGONA: (
+        "📍 <b>TURON TAXI · FARG‘ONA</b>\n\n"
+        "Farg‘ona ofisining aloqa ma’lumotlari hali kiritilmagan.\n"
+        "💳 <b>Pul yechish boti:</b> @didox_s_wb_bot"
+    ),
     TASHKENT: (
         "📍 <b>TURON TAXI · TOSHKENT</b>\n\n"
         "📞 <b>Bog‘lanish:</b>\n"
@@ -174,6 +179,11 @@ async def show_contact(update: Update, context: ContextTypes.DEFAULT_TYPE) -> in
         return ConversationHandler.END
     clear_application(context)
     region = get_region(context)
+    if region == FARGONA:
+        await update.effective_message.reply_text(
+            CONTACT_POSTS[region], parse_mode="HTML", disable_web_page_preview=True,
+        )
+        return ConversationHandler.END
     image_path = OFFICE_IMAGES / f"office_{region}.jpg"
     try:
         with image_path.open("rb") as photo:
